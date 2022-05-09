@@ -1,4 +1,4 @@
-# Pet Clinic with Vertx and Kafka 
+# Pet Clinic with Vert.x and Kafka 
 
 ## About 
 

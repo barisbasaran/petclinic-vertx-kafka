@@ -5,18 +5,19 @@ import io.baris.petclinic.vertxkafka.kafka.KafkaSubscriber;
 import io.baris.petclinic.vertxkafka.pet.PetController;
 import io.baris.petclinic.vertxkafka.pet.PetManager;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
 import io.vertx.core.Launcher;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import lombok.extern.slf4j.Slf4j;
 
+import static io.vertx.core.Future.succeededFuture;
+
+/**
+ * Main class to launch the application
+ */
 @Slf4j
 public class MainVerticle extends AbstractVerticle {
-
-    public static final String KAFKA_URL = "kafka:9092";
-    public static final String MY_TOPIC = "mytopic";
 
     public static void main(final String[] args) {
         Launcher.executeCommand("run", MainVerticle.class.getName());
@@ -34,7 +35,7 @@ public class MainVerticle extends AbstractVerticle {
         var router = Router.router(vertx);
         router.route("/pets*").handler(BodyHandler.create());
 
-        router.get("/").respond(context -> Future.succeededFuture("Welcome to Pet Clinic"));
+        router.get("/").respond(context -> succeededFuture("Welcome to Pet Clinic"));
         router.put("/pets").handler(petController::createPet);
         router.get("/pets").handler(petController::getAllPets);
         router.get("/pets/:pet_id").handler(petController::getPet);

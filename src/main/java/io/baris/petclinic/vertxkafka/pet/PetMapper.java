@@ -5,6 +5,9 @@ import io.baris.petclinic.vertxkafka.pet.model.Pet;
 import io.baris.petclinic.vertxkafka.pet.model.UpdatePet;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Maps pet classes to one another
+ */
 public class PetMapper {
 
     public static CreatePet mapToCreatePet(final String json) {

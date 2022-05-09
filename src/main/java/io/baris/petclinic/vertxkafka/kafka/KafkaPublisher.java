@@ -7,9 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-import static io.baris.petclinic.vertxkafka.MainVerticle.KAFKA_URL;
-import static io.baris.petclinic.vertxkafka.MainVerticle.MY_TOPIC;
+import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.KAFKA_URL;
+import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.MY_TOPIC;
 
+/**
+ * Publishes events to the kafka topics
+ */
 @Slf4j
 public class KafkaPublisher {
 

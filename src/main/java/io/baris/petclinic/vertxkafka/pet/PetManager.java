@@ -17,6 +17,9 @@ import static io.baris.petclinic.vertxkafka.kafka.EventType.UPDATE_PET;
 import static io.baris.petclinic.vertxkafka.pet.PetMapper.mapToPet;
 import static java.util.function.Predicate.isEqual;
 
+/**
+ * Manages pets
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class PetManager {

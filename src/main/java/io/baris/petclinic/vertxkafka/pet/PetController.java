@@ -5,6 +5,9 @@ import io.vertx.ext.web.RoutingContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controller class for pets
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class PetController {
