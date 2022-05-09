@@ -1,4 +1,4 @@
-package io.baris.example.pet.model;
+package io.baris.petclinic.vertxkafka.pet.model;
 
 import lombok.Builder;
 import lombok.Value;

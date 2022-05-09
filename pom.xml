@@ -4,17 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.baris.vertx</groupId>
+    <groupId>io.baris</groupId>
     <artifactId>petclinic-vertx-kafka</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>18</java.version>
-        <main.class>io.baris.petclinic.PetclinicApplication</main.class>
-
-        <main.verticle>io.baris.example.MainVerticle</main.verticle>
-        <launcher.class>io.vertx.core.Launcher</launcher.class>
+        <main.class>io.baris.petclinic.vertxkafka.MainVerticle</main.class>
 
         <!-- Frameworks -->
         <vertx.version>4.2.7</vertx.version>

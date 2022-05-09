@@ -1,10 +1,11 @@
-package io.baris.example;
+package io.baris.petclinic.vertxkafka;
 
-import io.baris.example.kafka.KafkaPublisher;
-import io.baris.example.kafka.KafkaSubscriber;
-import io.baris.example.pet.PetController;
-import io.baris.example.pet.PetManager;
+import io.baris.petclinic.vertxkafka.kafka.KafkaPublisher;
+import io.baris.petclinic.vertxkafka.kafka.KafkaSubscriber;
+import io.baris.petclinic.vertxkafka.pet.PetController;
+import io.baris.petclinic.vertxkafka.pet.PetManager;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
 import io.vertx.core.Launcher;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.Router;
@@ -33,6 +34,7 @@ public class MainVerticle extends AbstractVerticle {
         var router = Router.router(vertx);
         router.route("/pets*").handler(BodyHandler.create());
 
+        router.get("/").respond(context -> Future.succeededFuture("Welcome to Pet Clinic"));
         router.put("/pets").handler(petController::createPet);
         router.get("/pets").handler(petController::getAllPets);
         router.get("/pets/:pet_id").handler(petController::getPet);

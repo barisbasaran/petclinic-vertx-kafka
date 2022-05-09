@@ -1,15 +1,15 @@
-package io.baris.example.pet.model;
+package io.baris.petclinic.vertxkafka.pet.model;
 
 import lombok.Builder;
 import lombok.Value;
 
 /**
- * Model for updating a pet
+ * Represents a pet
  */
 
 @Builder
 @Value
-public class UpdatePet {
+public class Pet {
 
     int id;
     String name;

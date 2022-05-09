@@ -1,4 +1,4 @@
-package io.baris.example.kafka;
+package io.baris.petclinic.vertxkafka.kafka;
 
 public enum EventType {
     CREATE_PET,

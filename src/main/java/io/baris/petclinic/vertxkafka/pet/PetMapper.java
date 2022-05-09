@@ -1,8 +1,8 @@
-package io.baris.example.pet;
+package io.baris.petclinic.vertxkafka.pet;
 
-import io.baris.example.pet.model.CreatePet;
-import io.baris.example.pet.model.Pet;
-import io.baris.example.pet.model.UpdatePet;
+import io.baris.petclinic.vertxkafka.pet.model.CreatePet;
+import io.baris.petclinic.vertxkafka.pet.model.Pet;
+import io.baris.petclinic.vertxkafka.pet.model.UpdatePet;
 import io.vertx.core.json.JsonObject;
 
 public class PetMapper {

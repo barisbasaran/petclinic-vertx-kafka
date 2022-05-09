@@ -1,16 +1,15 @@
-package io.baris.example.kafka;
+package io.baris.petclinic.vertxkafka.kafka;
 
-import io.baris.example.pet.PetManager;
+import io.baris.petclinic.vertxkafka.pet.PetManager;
+import io.baris.petclinic.vertxkafka.pet.PetMapper;
 import io.vertx.core.Vertx;
 import io.vertx.kafka.client.consumer.KafkaConsumer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-import static io.baris.example.MainVerticle.KAFKA_URL;
-import static io.baris.example.MainVerticle.MY_TOPIC;
-import static io.baris.example.pet.PetMapper.mapToCreatePet;
-import static io.baris.example.pet.PetMapper.mapToUpdatePet;
+import static io.baris.petclinic.vertxkafka.MainVerticle.KAFKA_URL;
+import static io.baris.petclinic.vertxkafka.MainVerticle.MY_TOPIC;
 
 @Slf4j
 public class KafkaSubscriber {
@@ -37,8 +36,8 @@ public class KafkaSubscriber {
                 record.key(), record.value(), record.partition(), record.offset()
             );
             switch (record.key()) {
-                case CREATE_PET -> petManager.createPet(mapToCreatePet(record.value()));
-                case UPDATE_PET -> petManager.updatePet(mapToUpdatePet(record.value()));
+                case CREATE_PET -> petManager.createPet(PetMapper.mapToCreatePet(record.value()));
+                case UPDATE_PET -> petManager.updatePet(PetMapper.mapToUpdatePet(record.value()));
                 default -> log.info("No service found for key={}", record.key());
             }
         });
@@ -47,7 +46,7 @@ public class KafkaSubscriber {
     private Map<String, String> getKafkaConsumerConfig() {
         return Map.of(
             "bootstrap.servers", KAFKA_URL,
-            "key.deserializer", "io.baris.example.kafka.EventTypeDeserializer",
+            "key.deserializer", "io.baris.petclinic.vertxkafka.kafka.EventTypeDeserializer",
             "value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer",
             "group.id", "test",
             "auto.offset.reset", "earliest",

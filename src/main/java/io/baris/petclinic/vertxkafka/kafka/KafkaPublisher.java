@@ -1,4 +1,4 @@
-package io.baris.example.kafka;
+package io.baris.petclinic.vertxkafka.kafka;
 
 import io.vertx.core.Vertx;
 import io.vertx.kafka.client.producer.KafkaProducer;
@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-import static io.baris.example.MainVerticle.KAFKA_URL;
-import static io.baris.example.MainVerticle.MY_TOPIC;
+import static io.baris.petclinic.vertxkafka.MainVerticle.KAFKA_URL;
+import static io.baris.petclinic.vertxkafka.MainVerticle.MY_TOPIC;
 
 @Slf4j
 public class KafkaPublisher {
@@ -31,7 +31,7 @@ public class KafkaPublisher {
     private Map<String, String> getKafkaProducerConfig() {
         return Map.of(
             "bootstrap.servers", KAFKA_URL,
-            "key.serializer", "io.baris.example.kafka.EventTypeSerializer",
+            "key.serializer", "io.baris.petclinic.vertxkafka.kafka.EventTypeSerializer",
             "value.serializer", "org.apache.kafka.common.serialization.StringSerializer",
             "acks", "1"
         );

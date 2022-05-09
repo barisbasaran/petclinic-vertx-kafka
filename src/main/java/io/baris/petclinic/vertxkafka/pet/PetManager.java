@@ -1,9 +1,9 @@
-package io.baris.example.pet;
+package io.baris.petclinic.vertxkafka.pet;
 
-import io.baris.example.kafka.KafkaPublisher;
-import io.baris.example.pet.model.CreatePet;
-import io.baris.example.pet.model.Pet;
-import io.baris.example.pet.model.UpdatePet;
+import io.baris.petclinic.vertxkafka.kafka.KafkaPublisher;
+import io.baris.petclinic.vertxkafka.pet.model.CreatePet;
+import io.baris.petclinic.vertxkafka.pet.model.Pet;
+import io.baris.petclinic.vertxkafka.pet.model.UpdatePet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.baris.example.kafka.EventType.CREATE_PET;
-import static io.baris.example.kafka.EventType.UPDATE_PET;
-import static io.baris.example.pet.PetMapper.mapToPet;
+import static io.baris.petclinic.vertxkafka.kafka.EventType.CREATE_PET;
+import static io.baris.petclinic.vertxkafka.kafka.EventType.UPDATE_PET;
+import static io.baris.petclinic.vertxkafka.pet.PetMapper.mapToPet;
 import static java.util.function.Predicate.isEqual;
 
 @RequiredArgsConstructor

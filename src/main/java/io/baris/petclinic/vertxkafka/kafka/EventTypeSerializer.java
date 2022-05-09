@@ -1,4 +1,4 @@
-package io.baris.example.kafka;
+package io.baris.petclinic.vertxkafka.kafka;
 
 import org.apache.kafka.common.serialization.Serializer;
 

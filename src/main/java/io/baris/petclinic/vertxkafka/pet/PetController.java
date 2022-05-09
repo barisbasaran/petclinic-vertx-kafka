@@ -1,6 +1,6 @@
-package io.baris.example.pet;
+package io.baris.petclinic.vertxkafka.pet;
 
-import io.baris.example.common.Message;
+import io.baris.petclinic.vertxkafka.common.Message;
 import io.vertx.ext.web.RoutingContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
