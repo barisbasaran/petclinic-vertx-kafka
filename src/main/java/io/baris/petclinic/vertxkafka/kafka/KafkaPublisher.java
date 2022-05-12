@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.KAFKA_URL;
 import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.MY_TOPIC;
+import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getBootstrapServers;
 
 /**
  * Publishes events to the kafka topics
@@ -28,12 +28,12 @@ public class KafkaPublisher {
     ) {
         var record = new KafkaProducerRecordImpl<>(MY_TOPIC, eventType, value);
         producer.send(record);
-        log.info("Message sent successfully");
+        log.info("Event sent with key={}, value={}", eventType, value);
     }
 
     private Map<String, String> getKafkaProducerConfig() {
         return Map.of(
-            "bootstrap.servers", KAFKA_URL,
+            "bootstrap.servers", getBootstrapServers(),
             "key.serializer", "io.baris.petclinic.vertxkafka.kafka.EventTypeSerializer",
             "value.serializer", "org.apache.kafka.common.serialization.StringSerializer",
             "acks", "1"

@@ -10,28 +10,23 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class PetController {
+public class PetResource {
 
     private final PetManager petManager;
+    private final PetEventPublisher petEventPublisher;
 
     public void createPet(final RoutingContext context) {
-        petManager.publishCreatePet(context.getBodyAsString());
+        petEventPublisher.publishCreatePet(context.getBodyAsString());
 
-        context.json(Message.builder()
-            .message("Pet create request accepted")
-            .build()
-        );
+        context.json(new Message("Pet create request accepted"));
     }
 
     public void updatePet(final RoutingContext context) {
         var json = context.getBodyAsJson();
         json.put("id", getPetId(context));
-        petManager.publishUpdatePet(json.toString());
+        petEventPublisher.publishUpdatePet(json.toString());
 
-        context.json(Message.builder()
-            .message("Pet update request accepted")
-            .build()
-        );
+        context.json(new Message("Pet update request accepted"));
     }
 
     public void getPet(final RoutingContext context) {

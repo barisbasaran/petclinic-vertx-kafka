@@ -2,8 +2,9 @@ package io.baris.petclinic.vertxkafka;
 
 import io.baris.petclinic.vertxkafka.kafka.KafkaPublisher;
 import io.baris.petclinic.vertxkafka.kafka.KafkaSubscriber;
-import io.baris.petclinic.vertxkafka.pet.PetController;
+import io.baris.petclinic.vertxkafka.pet.PetEventPublisher;
 import io.baris.petclinic.vertxkafka.pet.PetManager;
+import io.baris.petclinic.vertxkafka.pet.PetResource;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Launcher;
 import io.vertx.core.Promise;
@@ -26,20 +27,20 @@ public class MainVerticle extends AbstractVerticle {
     @Override
     public void start(Promise<Void> startPromise) {
         var kafkaVertxPublisher = new KafkaPublisher(vertx);
-        var petManager = new PetManager(kafkaVertxPublisher);
+        var petEventPublisher = new PetEventPublisher(kafkaVertxPublisher);
+        var petManager = new PetManager();
         new KafkaSubscriber(vertx, petManager);
 
-        //var petManager = new PetManager(null);
-        var petController = new PetController(petManager);
+        var petResource = new PetResource(petManager, petEventPublisher);
 
         var router = Router.router(vertx);
         router.route("/pets*").handler(BodyHandler.create());
 
         router.get("/").respond(context -> succeededFuture("Welcome to Pet Clinic"));
-        router.put("/pets").handler(petController::createPet);
-        router.get("/pets").handler(petController::getAllPets);
-        router.get("/pets/:pet_id").handler(petController::getPet);
-        router.post("/pets/:pet_id").handler(petController::updatePet);
+        router.put("/pets").handler(petResource::createPet);
+        router.get("/pets").handler(petResource::getAllPets);
+        router.get("/pets/:pet_id").handler(petResource::getPet);
+        router.post("/pets/:pet_id").handler(petResource::updatePet);
 
         vertx.createHttpServer()
             .requestHandler(router)

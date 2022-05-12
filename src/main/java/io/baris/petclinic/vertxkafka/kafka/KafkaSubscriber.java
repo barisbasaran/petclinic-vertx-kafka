@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.KAFKA_URL;
 import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.MY_TOPIC;
+import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getBootstrapServers;
 
 /**
  * Subscribes to kafka topics to receive events
@@ -35,8 +35,8 @@ public class KafkaSubscriber {
         this.consumer.subscribe(MY_TOPIC);
 
         this.consumer.handler(record -> {
-            log.info("Processing key={},value={}, partition={},offset={}",
-                record.key(), record.value(), record.partition(), record.offset()
+            log.info("Event received for key={}, partition={}, offset={}, value={}",
+                record.key(), record.partition(), record.offset(), record.value()
             );
             switch (record.key()) {
                 case CREATE_PET -> petManager.createPet(PetMapper.mapToCreatePet(record.value()));
@@ -48,7 +48,7 @@ public class KafkaSubscriber {
 
     private Map<String, String> getKafkaConsumerConfig() {
         return Map.of(
-            "bootstrap.servers", KAFKA_URL,
+            "bootstrap.servers", getBootstrapServers(),
             "key.deserializer", "io.baris.petclinic.vertxkafka.kafka.EventTypeDeserializer",
             "value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer",
             "group.id", "test",
