@@ -2,8 +2,8 @@ package io.baris.petclinic.vertxkafka.kafka;
 
 import io.baris.petclinic.vertxkafka.pet.PetManager;
 import io.baris.petclinic.vertxkafka.pet.PetMapper;
-import io.vertx.core.Vertx;
 import io.vertx.kafka.client.consumer.KafkaConsumer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
 
@@ -16,28 +16,17 @@ import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getTopic;
  * Subscribes to kafka topics to receive events
  */
 @Slf4j
+@RequiredArgsConstructor
 public class KafkaSubscriber {
 
     private final KafkaConsumer<EventType, String> kafkaConsumer;
-
     private final PetManager petManager;
-
-    public KafkaSubscriber(
-        final Vertx vertx,
-        final Consumer<EventType, String> consumer,
-        final PetManager petManager
-    ) {
-        this.kafkaConsumer = KafkaConsumer.create(vertx, consumer);
-        this.petManager = petManager;
-
-        subscribeServices();
-    }
 
     public static Consumer<EventType, String> getCoreConsumer() {
         return new org.apache.kafka.clients.consumer.KafkaConsumer<>(getKafkaConsumerConfig());
     }
 
-    private void subscribeServices() {
+    public void subscribeServices() {
         this.kafkaConsumer.subscribe(getTopic());
 
         this.kafkaConsumer.handler(record -> {

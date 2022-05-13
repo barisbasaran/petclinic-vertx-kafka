@@ -1,8 +1,8 @@
 package io.baris.petclinic.vertxkafka.kafka;
 
-import io.vertx.core.Vertx;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.kafka.client.producer.impl.KafkaProducerRecordImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
 
@@ -15,16 +15,10 @@ import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getTopic;
  * Publishes events to the kafka topics
  */
 @Slf4j
+@RequiredArgsConstructor
 public class KafkaPublisher {
 
     private final KafkaProducer<EventType, String> kafkaProducer;
-
-    public KafkaPublisher(
-        final Vertx vertx,
-        final Producer<EventType, String> producer
-    ) {
-        this.kafkaProducer = KafkaProducer.create(vertx, producer);
-    }
 
     public static Producer<EventType, String> getCoreProducer() {
         return new org.apache.kafka.clients.producer.KafkaProducer<>(getKafkaProducerConfig());

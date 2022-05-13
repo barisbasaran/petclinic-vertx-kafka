@@ -11,11 +11,11 @@ import io.vertx.core.Launcher;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.kafka.client.consumer.KafkaConsumer;
+import io.vertx.kafka.client.producer.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 
 import static io.vertx.core.Future.succeededFuture;
@@ -41,10 +41,11 @@ public class MainVerticle extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> startPromise) {
-        var kafkaVertxPublisher = new KafkaPublisher(vertx, kafkaProducer);
+        var kafkaVertxPublisher = new KafkaPublisher(KafkaProducer.create(vertx, kafkaProducer));
         var petEventPublisher = new PetEventPublisher(kafkaVertxPublisher);
         var petManager = new PetManager();
-        new KafkaSubscriber(vertx, kafkaConsumer, petManager);
+        var kafkaSubscriber = new KafkaSubscriber(KafkaConsumer.create(vertx, kafkaConsumer), petManager);
+        kafkaSubscriber.subscribeServices();
 
         var petResource = new PetResource(petManager, petEventPublisher);
 
