@@ -1,9 +1,9 @@
 package io.baris.petclinic.vertxkafka;
 
 import io.baris.petclinic.vertxkafka.kafka.EventType;
-import io.baris.petclinic.vertxkafka.kafka.KafkaPublisher;
-import io.baris.petclinic.vertxkafka.kafka.KafkaSubscriber;
-import io.baris.petclinic.vertxkafka.pet.PetEventPublisher;
+import io.baris.petclinic.vertxkafka.kafka.EventProducer;
+import io.baris.petclinic.vertxkafka.kafka.EventConsumer;
+import io.baris.petclinic.vertxkafka.pet.PetEventProducer;
 import io.baris.petclinic.vertxkafka.pet.PetManager;
 import io.baris.petclinic.vertxkafka.pet.PetResource;
 import io.vertx.core.AbstractVerticle;
@@ -35,19 +35,21 @@ public class MainVerticle extends AbstractVerticle {
     private final Consumer<EventType, String> kafkaConsumer;
 
     public MainVerticle() {
-        this.kafkaProducer = KafkaPublisher.getCoreProducer();
-        this.kafkaConsumer = KafkaSubscriber.getCoreConsumer();
+        this.kafkaProducer = EventProducer.getCoreProducer();
+        this.kafkaConsumer = EventConsumer.getCoreConsumer();
     }
 
     @Override
     public void start(Promise<Void> startPromise) {
-        var kafkaVertxPublisher = new KafkaPublisher(KafkaProducer.create(vertx, kafkaProducer));
-        var petEventPublisher = new PetEventPublisher(kafkaVertxPublisher);
         var petManager = new PetManager();
-        var kafkaSubscriber = new KafkaSubscriber(KafkaConsumer.create(vertx, kafkaConsumer), petManager);
-        kafkaSubscriber.subscribeServices();
+        new EventConsumer(
+            KafkaConsumer.create(vertx, kafkaConsumer),
+            petManager
+        ).subscribe();
 
-        var petResource = new PetResource(petManager, petEventPublisher);
+        var eventProducer = new EventProducer(KafkaProducer.create(vertx, kafkaProducer));
+        var petEventProducer = new PetEventProducer(eventProducer);
+        var petResource = new PetResource(petManager, petEventProducer);
 
         var router = Router.router(vertx);
         router.route("/pets*").handler(BodyHandler.create());

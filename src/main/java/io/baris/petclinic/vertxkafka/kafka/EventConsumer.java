@@ -17,7 +17,7 @@ import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getTopic;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class KafkaSubscriber {
+public class EventConsumer {
 
     private final KafkaConsumer<EventType, String> kafkaConsumer;
     private final PetManager petManager;
@@ -26,7 +26,7 @@ public class KafkaSubscriber {
         return new org.apache.kafka.clients.consumer.KafkaConsumer<>(getKafkaConsumerConfig());
     }
 
-    public void subscribeServices() {
+    public void subscribe() {
         this.kafkaConsumer.subscribe(getTopic());
 
         this.kafkaConsumer.handler(record -> {

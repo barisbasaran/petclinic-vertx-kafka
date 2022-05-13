@@ -16,7 +16,7 @@ import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getTopic;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class KafkaPublisher {
+public class EventProducer {
 
     private final KafkaProducer<EventType, String> kafkaProducer;
 
@@ -24,7 +24,7 @@ public class KafkaPublisher {
         return new org.apache.kafka.clients.producer.KafkaProducer<>(getKafkaProducerConfig());
     }
 
-    public void publish(
+    public void publishEvent(
         final EventType eventType,
         final String value
     ) {

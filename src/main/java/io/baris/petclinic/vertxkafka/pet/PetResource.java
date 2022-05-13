@@ -17,11 +17,11 @@ public class PetResource {
     public static final String PET_ID = "pet_id";
 
     private final PetManager petManager;
-    private final PetEventPublisher petEventPublisher;
+    private final PetEventProducer petEventProducer;
 
     public void createPet(final RoutingContext context) {
         var jsonStr = context.getBodyAsString();
-        petEventPublisher.publishCreatePet(jsonStr);
+        petEventProducer.publishCreatePet(jsonStr);
 
         accepted(context, "Pet create request accepted");
     }
@@ -31,7 +31,7 @@ public class PetResource {
         var petId = pathParamAsInt(context, PET_ID);
         json.put("id", petId);
 
-        petEventPublisher.publishUpdatePet(json.toString());
+        petEventProducer.publishUpdatePet(json.toString());
 
         accepted(context, "Pet update request accepted");
     }
