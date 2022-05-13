@@ -4,8 +4,8 @@ import io.vertx.ext.web.RoutingContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static io.baris.petclinic.vertxkafka.common.WebUtils.accepted;
-import static io.baris.petclinic.vertxkafka.common.WebUtils.pathParamAsInt;
+import static io.baris.petclinic.vertxkafka.system.WebUtils.accepted;
+import static io.baris.petclinic.vertxkafka.system.WebUtils.pathParamAsInt;
 
 /**
  * Controller class for pets

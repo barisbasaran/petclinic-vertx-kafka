@@ -24,11 +24,22 @@ For testing:
 Run `mvn package` to build project with _Maven_.
 
 
-### Start application
+### Start the application
 
-Run `docker-compose up` to start application with _Docker_.
+Run `docker-compose --profile prod up` to start the application with _Docker_.
 
 To check that your application is running enter url `http://localhost:8080/`
+
+### Start only Kafka
+
+You may want to start only Kafka when you want to start the application separately from your IDE. 
+Then run the following.
+
+Run `docker-compose up` to start Kafka with _Docker_.
+
+### Start the application in IDE
+
+Run the main method of class **MainVerticle**.
 
 ## Endpoints
 

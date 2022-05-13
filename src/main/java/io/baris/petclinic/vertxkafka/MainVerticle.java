@@ -1,5 +1,6 @@
 package io.baris.petclinic.vertxkafka;
 
+import io.baris.petclinic.vertxkafka.kafka.EventType;
 import io.baris.petclinic.vertxkafka.kafka.KafkaPublisher;
 import io.baris.petclinic.vertxkafka.kafka.KafkaSubscriber;
 import io.baris.petclinic.vertxkafka.pet.PetEventPublisher;
@@ -10,7 +11,12 @@ import io.vertx.core.Launcher;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 
 import static io.vertx.core.Future.succeededFuture;
 
@@ -18,18 +24,27 @@ import static io.vertx.core.Future.succeededFuture;
  * Main class to launch the application
  */
 @Slf4j
+@RequiredArgsConstructor
 public class MainVerticle extends AbstractVerticle {
 
     public static void main(final String[] args) {
         Launcher.executeCommand("run", MainVerticle.class.getName());
     }
 
+    private final Producer<EventType, String> kafkaProducer;
+    private final Consumer<EventType, String> kafkaConsumer;
+
+    public MainVerticle() {
+        this.kafkaProducer = KafkaPublisher.getCoreProducer();
+        this.kafkaConsumer = KafkaSubscriber.getCoreConsumer();
+    }
+
     @Override
     public void start(Promise<Void> startPromise) {
-        var kafkaVertxPublisher = new KafkaPublisher(vertx);
+        var kafkaVertxPublisher = new KafkaPublisher(vertx, kafkaProducer);
         var petEventPublisher = new PetEventPublisher(kafkaVertxPublisher);
         var petManager = new PetManager();
-        new KafkaSubscriber(vertx, petManager);
+        new KafkaSubscriber(vertx, kafkaConsumer, petManager);
 
         var petResource = new PetResource(petManager, petEventPublisher);
 
@@ -45,8 +60,9 @@ public class MainVerticle extends AbstractVerticle {
         vertx.createHttpServer()
             .requestHandler(router)
             .listen(8080)
-            .onSuccess(server ->
-                log.info("Server started at port {}!", server.actualPort())
-            );
+            .onSuccess(server -> {
+                log.info("Server started at port {}!", server.actualPort());
+                startPromise.complete();
+            });
     }
 }

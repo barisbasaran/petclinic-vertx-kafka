@@ -4,6 +4,7 @@ import io.vertx.core.Vertx;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.kafka.client.producer.impl.KafkaProducerRecordImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.Producer;
 
 import java.util.Map;
 
@@ -16,10 +17,17 @@ import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getTopic;
 @Slf4j
 public class KafkaPublisher {
 
-    private final KafkaProducer<EventType, String> producer;
+    private final KafkaProducer<EventType, String> kafkaProducer;
 
-    public KafkaPublisher(final Vertx vertx) {
-        this.producer = KafkaProducer.create(vertx, getKafkaProducerConfig());
+    public KafkaPublisher(
+        final Vertx vertx,
+        final Producer<EventType, String> producer
+    ) {
+        this.kafkaProducer = KafkaProducer.create(vertx, producer);
+    }
+
+    public static Producer<EventType, String> getCoreProducer() {
+        return new org.apache.kafka.clients.producer.KafkaProducer<>(getKafkaProducerConfig());
     }
 
     public void publish(
@@ -27,11 +35,11 @@ public class KafkaPublisher {
         final String value
     ) {
         var record = new KafkaProducerRecordImpl<>(getTopic(), eventType, value);
-        producer.send(record);
+        kafkaProducer.send(record);
         log.info("Event sent with key={}, value={}", eventType, value);
     }
 
-    private Map<String, String> getKafkaProducerConfig() {
+    private static Map<String, Object> getKafkaProducerConfig() {
         return Map.of(
             "bootstrap.servers", getBootstrapServers(),
             "key.serializer", "io.baris.petclinic.vertxkafka.kafka.EventTypeSerializer",

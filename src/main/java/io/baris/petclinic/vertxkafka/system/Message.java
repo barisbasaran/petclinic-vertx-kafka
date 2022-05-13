@@ -1,4 +1,4 @@
-package io.baris.petclinic.vertxkafka.common;
+package io.baris.petclinic.vertxkafka.system;
 
 import lombok.Value;
 

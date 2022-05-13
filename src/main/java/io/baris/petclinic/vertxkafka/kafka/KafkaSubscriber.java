@@ -5,6 +5,7 @@ import io.baris.petclinic.vertxkafka.pet.PetMapper;
 import io.vertx.core.Vertx;
 import io.vertx.kafka.client.consumer.KafkaConsumer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.Consumer;
 
 import java.util.Map;
 
@@ -17,24 +18,29 @@ import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getTopic;
 @Slf4j
 public class KafkaSubscriber {
 
-    private final KafkaConsumer<EventType, String> consumer;
+    private final KafkaConsumer<EventType, String> kafkaConsumer;
 
     private final PetManager petManager;
 
     public KafkaSubscriber(
         final Vertx vertx,
+        final Consumer<EventType, String> consumer,
         final PetManager petManager
     ) {
-        this.consumer = KafkaConsumer.create(vertx, getKafkaConsumerConfig());
+        this.kafkaConsumer = KafkaConsumer.create(vertx, consumer);
         this.petManager = petManager;
 
         subscribeServices();
     }
 
-    private void subscribeServices() {
-        this.consumer.subscribe(getTopic());
+    public static Consumer<EventType, String> getCoreConsumer() {
+        return new org.apache.kafka.clients.consumer.KafkaConsumer<>(getKafkaConsumerConfig());
+    }
 
-        this.consumer.handler(record -> {
+    private void subscribeServices() {
+        this.kafkaConsumer.subscribe(getTopic());
+
+        this.kafkaConsumer.handler(record -> {
             log.info("Event received for key={}, partition={}, offset={}, value={}",
                 record.key(), record.partition(), record.offset(), record.value()
             );
@@ -46,7 +52,7 @@ public class KafkaSubscriber {
         });
     }
 
-    private Map<String, String> getKafkaConsumerConfig() {
+    private static Map<String, Object> getKafkaConsumerConfig() {
         return Map.of(
             "bootstrap.servers", getBootstrapServers(),
             "key.deserializer", "io.baris.petclinic.vertxkafka.kafka.EventTypeDeserializer",
