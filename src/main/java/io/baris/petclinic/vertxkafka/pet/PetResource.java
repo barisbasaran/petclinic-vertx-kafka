@@ -1,9 +1,11 @@
 package io.baris.petclinic.vertxkafka.pet;
 
-import io.baris.petclinic.vertxkafka.common.Message;
 import io.vertx.ext.web.RoutingContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import static io.baris.petclinic.vertxkafka.common.WebUtils.accepted;
+import static io.baris.petclinic.vertxkafka.common.WebUtils.pathParamAsInt;
 
 /**
  * Controller class for pets
@@ -12,25 +14,31 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PetResource {
 
+    public static final String PET_ID = "pet_id";
+
     private final PetManager petManager;
     private final PetEventPublisher petEventPublisher;
 
     public void createPet(final RoutingContext context) {
-        petEventPublisher.publishCreatePet(context.getBodyAsString());
+        var jsonStr = context.getBodyAsString();
+        petEventPublisher.publishCreatePet(jsonStr);
 
-        context.json(new Message("Pet create request accepted"));
+        accepted(context, "Pet create request accepted");
     }
 
     public void updatePet(final RoutingContext context) {
         var json = context.getBodyAsJson();
-        json.put("id", getPetId(context));
+        var petId = pathParamAsInt(context, PET_ID);
+        json.put("id", petId);
+
         petEventPublisher.publishUpdatePet(json.toString());
 
-        context.json(new Message("Pet update request accepted"));
+        accepted(context, "Pet update request accepted");
     }
 
     public void getPet(final RoutingContext context) {
-        petManager.getPet(getPetId(context))
+        var petId = pathParamAsInt(context, PET_ID);
+        petManager.getPet(petId)
             .map(context::json)
             .orElseGet(() -> context.response()
                 .setStatusCode(404)
@@ -40,9 +48,5 @@ public class PetResource {
 
     public void getAllPets(final RoutingContext context) {
         context.json(petManager.getAllPets());
-    }
-
-    private int getPetId(final RoutingContext context) {
-        return Integer.parseInt(context.pathParam("pet_id"));
     }
 }

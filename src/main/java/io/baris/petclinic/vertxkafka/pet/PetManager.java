@@ -33,8 +33,7 @@ public class PetManager {
 
     public void updatePet(UpdatePet updatePet) {
         var petId = updatePet.getId();
-        Optional
-            .ofNullable(pets.get(petId))
+        Optional.ofNullable(pets.get(petId))
             .ifPresentOrElse(it -> {
                     var pet = mapToPet(updatePet);
                     pets.put(petId, pet);

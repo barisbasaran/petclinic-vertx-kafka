@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.MY_TOPIC;
 import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getBootstrapServers;
+import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getTopic;
 
 /**
  * Publishes events to the kafka topics
@@ -26,7 +26,7 @@ public class KafkaPublisher {
         final EventType eventType,
         final String value
     ) {
-        var record = new KafkaProducerRecordImpl<>(MY_TOPIC, eventType, value);
+        var record = new KafkaProducerRecordImpl<>(getTopic(), eventType, value);
         producer.send(record);
         log.info("Event sent with key={}, value={}", eventType, value);
     }

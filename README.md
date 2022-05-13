@@ -2,16 +2,18 @@
 
 ## About 
 
-This is an example **RESTful** web service for the **Java Petclinic**.
+This is an example **Java** RESTful web service for a **pet clinic**.
+It is based on [Vert.x](https://vertx.io/)
+and [Apache Kafka](https://kafka.apache.org/).
 
-It is built using the following tools:
+The whole list of tools used is as follows:
 * [Vert.x](https://vertx.io/)
 * [Apache Kafka](https://kafka.apache.org/)
 * [Docker](https://www.docker.com)
 * [Lombok](https://projectlombok.org)
 * [Maven](https://maven.apache.org)
 
-It is using the following test frameworks:
+For testing:
 * [JUnit](https://junit.org/junit5/)
 * [AssertJ](https://assertj.github.io/doc/)
 

@@ -7,8 +7,12 @@ import java.util.Optional;
  */
 public class KafkaUtils {
 
-    public static final String KAFKA_URL = "localhost:9092";
+    public static final String KAFKA_URL = "localhost:9093";
     public static final String MY_TOPIC = "mytopic";
+
+    public static String getTopic() {
+        return MY_TOPIC;
+    }
 
     public static String getBootstrapServers() {
         return Optional

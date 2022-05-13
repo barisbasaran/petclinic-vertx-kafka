@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.MY_TOPIC;
 import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getBootstrapServers;
+import static io.baris.petclinic.vertxkafka.kafka.KafkaUtils.getTopic;
 
 /**
  * Subscribes to kafka topics to receive events
@@ -32,7 +32,7 @@ public class KafkaSubscriber {
     }
 
     private void subscribeServices() {
-        this.consumer.subscribe(MY_TOPIC);
+        this.consumer.subscribe(getTopic());
 
         this.consumer.handler(record -> {
             log.info("Event received for key={}, partition={}, offset={}, value={}",
