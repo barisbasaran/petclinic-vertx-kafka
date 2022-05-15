@@ -1,18 +1,16 @@
 package io.baris.petclinic.vertxkafka;
 
+import io.baris.petclinic.vertxkafka.system.ApplicationConfig;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
-import org.apache.kafka.clients.consumer.MockConsumer;
-import org.apache.kafka.clients.producer.MockProducer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static io.vertx.core.http.HttpMethod.GET;
-import static org.apache.kafka.clients.consumer.OffsetResetStrategy.NONE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(VertxExtension.class)
@@ -20,10 +18,10 @@ public class HomepageTest {
 
     @BeforeEach
     public void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
-        var verticle = new MainVerticle(
-            new MockProducer<>(),
-            new MockConsumer<>(NONE)
-        );
+        var applicationConfig = ApplicationConfig.builder()
+            .env("test")
+            .build();
+        var verticle = new MainVerticle(applicationConfig);
         vertx.deployVerticle(verticle, testContext.succeedingThenComplete());
     }
 

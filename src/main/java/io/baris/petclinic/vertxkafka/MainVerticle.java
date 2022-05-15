@@ -1,11 +1,11 @@
 package io.baris.petclinic.vertxkafka;
 
-import io.baris.petclinic.vertxkafka.kafka.EventType;
-import io.baris.petclinic.vertxkafka.kafka.EventProducer;
 import io.baris.petclinic.vertxkafka.kafka.EventConsumer;
+import io.baris.petclinic.vertxkafka.kafka.EventProducer;
 import io.baris.petclinic.vertxkafka.pet.PetEventProducer;
 import io.baris.petclinic.vertxkafka.pet.PetManager;
 import io.baris.petclinic.vertxkafka.pet.PetResource;
+import io.baris.petclinic.vertxkafka.system.ApplicationConfig;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Launcher;
 import io.vertx.core.Promise;
@@ -15,9 +15,9 @@ import io.vertx.kafka.client.consumer.KafkaConsumer;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.producer.Producer;
 
+import static io.baris.petclinic.vertxkafka.kafka.EventConsumer.createKafkaConsumer;
+import static io.baris.petclinic.vertxkafka.kafka.EventProducer.createKafkaProducer;
 import static io.vertx.core.Future.succeededFuture;
 
 /**
@@ -31,23 +31,23 @@ public class MainVerticle extends AbstractVerticle {
         Launcher.executeCommand("run", MainVerticle.class.getName());
     }
 
-    private final Producer<EventType, String> kafkaProducer;
-    private final Consumer<EventType, String> kafkaConsumer;
+    private final ApplicationConfig applicationConfig;
 
     public MainVerticle() {
-        this.kafkaProducer = EventProducer.getCoreProducer();
-        this.kafkaConsumer = EventConsumer.getCoreConsumer();
+        this.applicationConfig = ApplicationConfig.builder()
+            .env("prod")
+            .build();
     }
 
     @Override
     public void start(Promise<Void> startPromise) {
         var petManager = new PetManager();
-        new EventConsumer(
-            KafkaConsumer.create(vertx, kafkaConsumer),
-            petManager
-        ).subscribe();
+        var kafkaConsumer = KafkaConsumer.create(vertx, createKafkaConsumer(applicationConfig));
+        new EventConsumer(kafkaConsumer, petManager)
+            .subscribe();
 
-        var eventProducer = new EventProducer(KafkaProducer.create(vertx, kafkaProducer));
+        var kafkaProducer = KafkaProducer.create(vertx, createKafkaProducer(applicationConfig));
+        var eventProducer = new EventProducer(kafkaProducer);
         var petEventProducer = new PetEventProducer(eventProducer);
         var petResource = new PetResource(petManager, petEventProducer);
 
